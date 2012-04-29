@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>Example</title>
+	</head>
+	<body>
+		<script src="type.js"></script>
+		<script>
+			function multiply(a,b) {
+			   var checks = [['x', TYPE.number, 3], ['y', TYPE.number, 13]];
+
+			   if(( tmp = TYPE.run(checks)) !== false) return tmp;
+			   
+			   return a*b;
+			}
+	
+		console.log(multiply(3, null));
+		</script>
+		
+	</body>
+</html>

@@ -1,6 +1,5 @@
 #Tip-Type
 Copyright Alex Rohde 2012. Released under GPL v2
-Version 1.00
 * * *
 Tip-Type is a javascript library for allowing both type checking, and default parameters in javascript. The type checking is perfromed at runtime and calls a programmer-specified error condition when its assumptions are violated. The ultimate goal of type-checking is to assist in the debugging process.
 
@@ -37,7 +36,7 @@ After a while, I decided to make this library to cut out the redundancy.
 
 COPYRIGHT
 ----------------------------------------------------------------
- * ALive Fields V.46
+ * Tip Type 1.00
  * http://alexrohde.com/
  *
  * Copyright 2012, Alex Rohde
