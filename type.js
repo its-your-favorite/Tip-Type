@@ -75,8 +75,8 @@ TYPE.runTest = function () {
 		[window.document, 	[TYPE.anything, TYPE.document]], 
 		[document.getElementsByTagName("html")[0], 	[TYPE.anything, TYPE.element]],
 		[document.createElement("div"), 			[TYPE.anything, TYPE.element]], 
-		[alert, 			[TYPE.anything, TYPE.function]],
-		[function(){},		[TYPE.anything, TYPE.function]]  ];
+		[alert, 			[TYPE.anything, type.func]],
+		[function(){},		[TYPE.anything, type.func]]  ];
 
 	var types = [], x, y, matches;
 	for (x in TYPE) {
@@ -107,7 +107,7 @@ TYPE.runTest = function () {
 
 TYPE.run = function(info) {
 	var x, tmp, next = [], failed = false;
-	var passed = [].splice.call(TYPE.run.caller.arguments, 0);
+	var passed = Array.prototype.slice.call(TYPE.run.caller.arguments);
 	/*splice makes it a real array */
 	var expected = TYPE.run.caller.toString();
 	/* The list of actual function parameters in the declaration */
