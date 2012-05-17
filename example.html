@@ -6,9 +6,9 @@
 		<script src="type.js"></script>
 		<script>
 			function multiply(a,b) {
-			   var checks = [['x', TYPE.number, 3], ['y', TYPE.number, 13]];
+			   var checks = [['a', TYPE.number, 3], ['b', TYPE.number, 13]];
 
-			   if(( tmp = TYPE.run(checks)) !== false) return tmp;
+			   if (checks = TYPE(checks)) return checks ;
 			   
 			   return a*b;
 			}
