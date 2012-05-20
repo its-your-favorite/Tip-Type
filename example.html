@@ -5,7 +5,23 @@
 	<body>
 		<script src="type.js"></script>
 		<script>
-			function multiply(a, b) {
+
+			/** 
+			 * It can be this easy. The TipType call is looking at the 
+			 */
+			function multiply(/*int*/ a, /*int*/ b) {
+				TipType();
+				return a*b;
+			}
+ 
+			console.log(multiply(2, 5));
+			console.log(multiply([],3));
+			
+			
+			/**
+			 * Example for complicated notation. Not recommended.
+			 */
+			function complicatedMultiply(a, b) {
 				var checks = [['a', TipType.number, 3], ['b', TipType.number, 13]];
 
 				if( checks = TipType.defaults(checks))
@@ -13,18 +29,8 @@
 
 				return a * b;
 			}
-
-			function otherMultiply(/*int*/ a, /*int*/ b) {
-				TipType();
-				return a*b;
-			}
-
-			console.log(multiply(3, null));
-			console.log(otherMultiply(2,3));
-			console.log(otherMultiply(2,"a"));
-			console.log(otherMultiply([],3));
-			console.log(otherMultiply([],"c"));
-			
+			console.log(complicatedMultiply()); // will substite default values
+			alert("grah, this doesn't work yet!");
 		</script>
 	</body>
 </html>

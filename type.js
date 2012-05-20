@@ -8,8 +8,8 @@
 
 /*  Potential ambiguities:
 
-Though the following are all instanceof object in javascript, this library does not trigger true for TipType.object (date, html element, array [], function, )
-if you want to allow any of these use simply Object , otherwise use TipType.object , or TipType.map
+Though the following actually are all instanceof object in javascript(date, html element, array [], function ), this library does not trigger true for TipType.object 
+if you want to allow any of these use simply Object with a capital O, otherwise use TipType.object , or TipType.map if you explicitly want an assoc array
 */
 
 /**
@@ -20,7 +20,6 @@ if you want to allow any of these use simply Object , otherwise use TipType.obje
  * // @todo: decide if setting a type, but no default, should emit an error
  * @todo: refactor code to unify class constants and tests array
  */
-var TipType = {};
 
 /**
  * Used for the quick notation, which doesn't support default values
@@ -44,13 +43,13 @@ TipType = function(){
 			;
 		}		
 		else {
-			if (window.hasOwnProperty[comment[1]] ) /* Existing "class" */
+			if (window.hasOwnProperty(comment[1]) ) /* Existing "class" */
  				sought = window[comment[1]];
  			else /* Treat as a string */
  				sought = comment[1];
  			okay = TipType.validateParam(sought, passed[x], []);
  			if (!okay) {
- 				TipType.raiseError("TipType. Type Checking Assertion Failed on " + expected[x] + "\". Received: " + TipType.getType(passed[x]) + ", expected: " + sought);
+ 				TipType.raiseError("TipType. Type Checking Assertion Failed on " + expected[x] + "\". Received: " + TipType.getType(passed[x]) + ", expected: " + comment[1]);
  			}
 		}
 		
@@ -216,7 +215,7 @@ TipType.getType = function(o) {
 TipType.raiseError = function(a) {
 	alert(a);
 	console.log(a); 
-	debugger;
+	//debugger;
 	return false;
 };
 /**
