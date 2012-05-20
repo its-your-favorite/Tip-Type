@@ -47,7 +47,7 @@ Then you'd have to use advanced notation.
 
 What valid types can I check? 
 ----------------------------------------------------------------
-See the wiki on github for the most complete list. However, it can at least check: string, number, int, object, array,
+See the wiki on github for the most complete list. However, it can at least check: string, number, int, object, array, "classes,"
 function, date, and html element. 
 
 
