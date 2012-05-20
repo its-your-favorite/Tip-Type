@@ -37,8 +37,18 @@ There is an un-recommended advanced notation if you want to use default paramete
 
 What problem does this library solve?
 ----------------------------------------------------------------
-
 The inability to type check in JS. 
+
+
+What if I want to minify in production AND keep type checking in production?
+----------------------------------------------------------------
+Then you'd have to use advanced notation. 
+
+
+What valid types can I check? 
+----------------------------------------------------------------
+See the wiki on github for the most complete list. However, it can at least check: string, number, int, object, array,
+function, date, and html element. 
 
 
 COPYRIGHT

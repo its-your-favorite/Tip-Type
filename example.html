@@ -3,9 +3,8 @@
 		<title>Example</title>
 	</head>
 	<body>
-		<script src="type.js"></script>
-		<script>
-
+		<script src="type.js" type="text/javascript" language="JavaScript"></script>
+		<script type="text/javascript" language="JavaScript"> 
 			/** 
 			 * It can be this easy. The TipType call is looking at the 
 			 */
@@ -29,6 +28,20 @@
 
 				return a * b;
 			}
+			
+			/**
+			 * Example for OTHER complicated notation. Not recommended.
+			 */
+			function complicatedMultiply2(a, b) {
+				var checks = [{'var': 'a', 'type': TipType.number, 'def': 3}, 
+							  {'var': 'b', 'type': TipType.number, 'def': 13}];
+
+				if( checks = TipType.defaults(checks))
+					return checks;
+
+				return a * b;
+			}
+					
 			console.log(complicatedMultiply()); // will substite default values
 			alert("grah, this doesn't work yet!");
 		</script>
