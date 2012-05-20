@@ -6,15 +6,18 @@
 		<script src="type.js" type="text/javascript" language="JavaScript"></script>
 		<script type="text/javascript" language="JavaScript"> 
 			/** 
-			 * It can be this easy. The TipType call is looking at the 
+			 * It can be this easy. The TipType call is looking at the comments.
+			 * 
+			 * If you wanted to see if a was a jQuery object instead, you could replace
+			 *  int with jQuery, for example.
 			 */
-			function multiply(/*int*/ a, /*int*/ b) {
+			function multiply(/*int*/ a, /*number*/ b) {
 				TipType();
 				return a*b;
 			}
  
 			console.log(multiply(2, 5));
-			console.log(multiply([],3));
+			console.log(multiply([],3)); // Fails. 
 			
 			
 			/**
@@ -43,7 +46,7 @@
 			}
 					
 			console.log(complicatedMultiply()); // will substite default values
-			alert("grah, this doesn't work yet!");
+		 
 		</script>
 	</body>
 </html>

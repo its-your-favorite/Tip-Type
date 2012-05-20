@@ -15,9 +15,7 @@ if you want to allow any of these use simply Object with a capital O, otherwise 
 /**
  *
  * @todo: refactoring described below.
- * @todo: Enhance expected error message. If expected was an array of possibilities, display it well.
- * @todo: enhance error message to include line numbers
- * // @todo: decide if setting a type, but no default, should emit an error
+ * @todo: Enhance expected error message. If expected was an array of possibilities, display it well. 
  * @todo: refactor code to unify class constants and tests array
  */
 
@@ -33,7 +31,9 @@ TipType = function(){
 	for (x = 0, len = expected.length; x < len; x++) {
 		comment = expected[x].split("*/");
 		if (comment.length > 2)
-			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
+			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
+		else if (comment.length === 1)
+			return  TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
 		comment = comment[0].split("/*");
 	
 		if (comment.length > 2){
@@ -113,7 +113,7 @@ TipType.defaults = function(info) {
 	for( x = 0; x < expected.length; x++) {/* For each actual parameter */
 
 		if(checks.hasOwnProperty(expected[x]))
-			if(passed[x] !== null) {/* An actual parameter was provided already */
+			if(typeof(passed[x])!=="undefined") {/* An actual parameter was provided already */
 				var type = (checks[expected[x]][type_key]);
 				var okay = false, def = [];
 				var value = passed[x];
@@ -215,7 +215,7 @@ TipType.getType = function(o) {
 TipType.raiseError = function(a) {
 	alert(a);
 	console.log(a); 
-	//debugger;
+	debugger;
 	return false;
 };
 /**
