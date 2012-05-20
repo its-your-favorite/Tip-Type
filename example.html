@@ -5,16 +5,26 @@
 	<body>
 		<script src="type.js"></script>
 		<script>
-			function multiply(a,b) {
-			   var checks = [['a', TYPE.number, 3], ['b', TYPE.number, 13]];
+			function multiply(a, b) {
+				var checks = [['a', TipType.number, 3], ['b', TipType.number, 13]];
 
-			   if (checks = TYPE(checks)) return checks ;
-			   
-			   return a*b;
+				if( checks = TipType.defaults(checks))
+					return checks;
+
+				return a * b;
 			}
-	
-		console.log(multiply(3, null));
+
+			function otherMultiply(/*int*/ a, /*int*/ b) {
+				TipType();
+				return a*b;
+			}
+
+			console.log(multiply(3, null));
+			console.log(otherMultiply(2,3));
+			console.log(otherMultiply(2,"a"));
+			console.log(otherMultiply([],3));
+			console.log(otherMultiply([],"c"));
+			
 		</script>
-		
 	</body>
 </html>
