@@ -24,22 +24,26 @@ if you want to allow any of these use simply Object with a capital O, otherwise 
  */
 TipType = function(){
 	var expected = TipType.caller.toString(), comment = null, okay = null, sought = null;
-	var passed = Array.prototype.slice.call(TipType.caller.arguments);
+	var passed = Array.prototype.slice.call(TipType.caller.arguments), inner;
 	/* The list of actual function parameters in the declaration */
 	expected = expected.split(")")[0].split("(")[1].split(" ").join("").split(",");
 	var len, param_names = [];
 	for (x = 0, len = expected.length; x < len; x++) {
-		comment = expected[x].split("*/");
-		if (comment.length > 2)
+		inner = expected[x].split("*/");
+		
+		if (inner.length > 2)
 			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
-		else if (comment.length === 1)
-			return  TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
-		comment = comment[0].split("/*");
+					
+		comment = inner[0].split("/*");
 	
+		if (inner.length == 1 && comment.length > 1)
+			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
+		
+		
 		if (comment.length > 2){
 			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
 		}		
-		else if (comment.length == 0){ /*no type checking on this var*/
+		else if (comment.length == 1){ /*no type checking on this var*/
 			;
 		}		
 		else {
@@ -250,6 +254,8 @@ TipType.runTest = function() {
  *
  */
 TipType.validateParam = function(type, value, def) {
+	var okay;
+	
 	if(type === String) {/* Since instanceof doesn't believe "test" is an instance of string */
 		type = TipType.string;
 	}
