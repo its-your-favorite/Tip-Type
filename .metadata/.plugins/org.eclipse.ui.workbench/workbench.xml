@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="22" version="2.0">
+<workbench progressCount="32" version="2.0">
 <workbenchAdvisor/>
-<window height="940" maximized="true" width="1200" x="125" y="100">
+<window height="912" maximized="true" width="1200" x="125" y="100">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -32,22 +32,21 @@
 <part id="0"/>
 <part id="1"/>
 <part id="2"/>
-<part id="3"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="com.aptana.editor.html" name="example.html" partName="example.html" title="example.html" tooltip="C:\Users\alex\Google Drive\Tip-Type\example.html" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="com.aptana.editor.html" name="example.html" partName="example.html" title="example.html" tooltip="C:\Users\alex\Google Drive\Tip-Type\example.html" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/C:/Users/alex/Google%20Drive/Tip-Type/example.html"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="574" selectionTopPixel="96"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="461" selectionTopPixel="0"/>
 </editor>
 <editor id="com.aptana.editor.markdown" name="README.md" partName="README.md" title="README.md" tooltip="C:\Users\alex\Google Drive\Tip-Type\README.md" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/C:/Users/alex/Google%20Drive/Tip-Type/README.md"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="com.aptana.editor.js" name="type.js" partName="type.js" title="type.js" tooltip="C:\Users\alex\Google Drive\Tip-Type\type.js" workbook="DefaultEditorWorkbook">
+<editor id="com.aptana.editor.js" name="type.js" partName="type.js" title="type.js" tooltip="C:\Users\alex\Google Drive\Tip-Type\type.js" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/C:/Users/alex/Google%20Drive/Tip-Type/type.js"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7730" selectionTopPixel="3066"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1702" selectionTopPixel="481"/>
 </editor>
 </editors>
 <views>
@@ -73,7 +72,7 @@
 <viewState/>
 </view>
 </views>
-<perspectives activePart="com.aptana.editor.js" activePerspective="com.aptana.ui.WebPerspective">
+<perspectives activePart="com.aptana.editor.html" activePerspective="com.aptana.ui.WebPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="com.aptana.ui.internal.WebPerspectiveFactory" id="com.aptana.ui.WebPerspective" label="Web"/>
 <alwaysOnActionSet id="com.aptana.browser.actionSet"/>
@@ -172,16 +171,8 @@
 <editors>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" uri="file:/C:/Users/alex/Google%20Drive/Tip-Type/example.html"/>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" uri="file:/C:/Users/alex/Google%20Drive/Tip-Type/type.js"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" uri="file:/C:/Users/alex/Google%20Drive/Tip-Type/example.html"/>
 </editors>
-<item historyLabel="type.js" index="1">
-<position info="not_deleted" x="2142" y="0"/>
-</item>
-<item historyLabel="type.js" index="1">
-<position info="not_deleted" x="1709" y="0"/>
-</item>
-<item historyLabel="type.js" index="1">
-<position/>
-</item>
 <item historyLabel="type.js" index="1">
 <position/>
 </item>
@@ -320,8 +311,17 @@
 <item historyLabel="example.html" index="0">
 <position info="not_deleted" x="574" y="0"/>
 </item>
-<item active="true" historyLabel="type.js" index="1">
+<item historyLabel="type.js" index="1">
 <position info="not_deleted" x="1465" y="0"/>
+</item>
+<item historyLabel="example.html" index="2">
+<position info="not_deleted" x="462" y="0"/>
+</item>
+<item historyLabel="type.js" index="1">
+<position info="not_deleted" x="1702" y="0"/>
+</item>
+<item active="true" historyLabel="example.html" index="2">
+<position info="not_deleted" x="462" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

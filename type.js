@@ -8,66 +8,66 @@
 
 /*  Potential ambiguities:
 
-Though the following actually are all instanceof object in javascript(date, html element, array [], function ), this library does not trigger true for TipType.object 
+Though the following actually are all instanceof object in javascript(date, html element, array [], function ), this library does not trigger true for TipType.object
 if you want to allow any of these use simply Object with a capital O, otherwise use TipType.object , or TipType.map if you explicitly want an assoc array
 */
 
 /**
  *
  * @todo: refactoring described below.
- * @todo: Enhance expected error message. If expected was an array of possibilities, display it well. 
+ * @todo: Enhance expected error message. If expected was an array of possibilities, display it well.
  * @todo: refactor code to unify class constants and tests array
  */
 
 /**
  * Used for the quick notation, which doesn't support default values
+ * 
+ * Assumptions: You don't use { in your comments
  */
-TipType = function(){
+TipType = function() {
 	var expected = TipType.caller.toString(), comment = null, okay = null, sought = null;
 	var passed = Array.prototype.slice.call(TipType.caller.arguments), inner;
+	var prefix = "/^function .*\\(/";
+	
 	/* The list of actual function parameters in the declaration */
-	expected = expected.split(")")[0].split("(")[1].split(" ").join("").split(",");
-	var len, param_names = [];
-	for (x = 0, len = expected.length; x < len; x++) {
+	expected = expected.split("{")[0].replace(/\s/g,"").substr(expected.indexOf('('));
+	expected = expected.match(/(\s?(\/\*([^\*]*)\*\/\s?)?([^,\)]+),?)/g);
+
+	var len, variable = null, param_names = [], y;
+	for( x = 0, len = expected.length; x < len; x++) 
+		if (expected[x].indexOf("*") >= 0)
+		{
 		inner = expected[x].split("*/");
+		if(inner.length !== 2)
+			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
+		variable = inner[1].split(",")[0];
+		inner = inner[0].split("/*");
+		if(inner.length !== 2)
+			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
+			
+		inner = inner[1].split(","); /* In case multiple valid types */
 		
-		if (inner.length > 2)
-			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
-					
-		comment = inner[0].split("/*");
-	
-		if (inner.length == 1 && comment.length > 1)
-			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
-		
-		
-		if (comment.length > 2){
-			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion.");
-		}		
-		else if (comment.length == 1){ /*no type checking on this var*/
-			;
-		}		
-		else {
-			if (window.hasOwnProperty(comment[1]) ) /* Existing "class" */
- 				sought = window[comment[1]];
- 			else /* Treat as a string */
- 				sought = comment[1];
- 			okay = TipType.validateParam(sought, passed[x], []);
- 			if (!okay) {
- 				TipType.raiseError("TipType. Type Checking Assertion Failed on " + expected[x] + "\". Received: " + TipType.getType(passed[x]) + ", expected: " + comment[1]);
- 			}
+		okay = false;
+		for( y = 0, len2 = inner.length; (!okay) && (y < len2); y++) {
+			if(window.hasOwnProperty(inner[y]))/* Existing "class" */
+				sought = window[inner[y]];
+			else/* Treat as a string */
+				sought = inner[y];
+			okay |= TipType.validateParam(sought, passed[x], []);
 		}
-		
+		if(!okay) {
+			TipType.raiseError("TipType. Type Checking Assertion Failed on " + inner.join(",") + ". Received: " + TipType.getType(passed[x]) + ", expected: " + inner.join(","));
+		}
+
 	}
-	
+
 }
-
-
 /**
  * Used for the lengthy notation, which does support default values
  */
 TipType.defaults = function(info) {
 	var x, tmp, next = [], failed = false, checks = {};
-	
+
 	var caller = TipType.defaults.caller;
 	var passed = Array.prototype.slice.call(caller.arguments);
 	/*splice makes it a real array */
@@ -90,7 +90,7 @@ TipType.defaults = function(info) {
 			if((TipType.getType(info[x]) !== "Array") || (info[x].length < 1))/*For some reason this function was provided a malformed array */
 				return TipType.raiseError("TipType: Could not understand...");
 			tmp = {};
-			tmp[name_key] =  info[x][0] ;
+			tmp[name_key] = info[x][0];
 
 			if(info[x].length > 1)
 				tmp.type = info[x][1];
@@ -104,7 +104,7 @@ TipType.defaults = function(info) {
 			if((TipType.getType(info[x]) !== "Object"))/*For some reason this function was provided a malformed array  || (!info[x].hasOwnProperty[default_key])*/
 				return TipType.raiseError("TipType: Could not understand...");
 			if(info[x].hasOwnProperty(name_key))
-				checks[info[name_key]] = info[x];
+				checks[info[x][name_key]] = info[x];
 			else
 				checks[expected[x]] = info[x];
 			/* In an assoc array, make the var element optional */
@@ -117,7 +117,7 @@ TipType.defaults = function(info) {
 	for( x = 0; x < expected.length; x++) {/* For each actual parameter */
 
 		if(checks.hasOwnProperty(expected[x]))
-			if(typeof(passed[x])!=="undefined") {/* An actual parameter was provided already */
+			if( typeof (passed[x]) !== "undefined") {/* An actual parameter was provided already */
 				var type = (checks[expected[x]][type_key]);
 				var okay = false, def = [];
 				var value = passed[x];
@@ -139,7 +139,7 @@ TipType.defaults = function(info) {
 					if(!okay) {
 						var desc = "";
 						if(value && value.toString)
-							desc = value.toString().substr(0,10);
+							desc = value.toString().substr(0, 10);
 
 						TipType.raiseError("TipType. Type Checking Assertion Failed on Param #" + (x + 1) + " \"" + expected[x] + "\". Received: " + desc + ", expected " + type.toString());
 						/* @todo provide function information like above, perhaps in raiseerror */
@@ -181,7 +181,8 @@ TipType.defaults = function(info) {
  * Class Constants
  */
 TipType.anything = "anything";
-TipType.anything2 = "?"; /* same as anything */
+TipType.anything2 = "?";
+/* same as anything */
 TipType.number = "number";
 TipType.integer = "integer";
 TipType.int = "int";
@@ -191,13 +192,16 @@ TipType.object = "object";
 TipType.array = "array";
 TipType.arr = "arr";
 /* same as array */
-TipType['function'] = "function"; 
-TipType.callback = "callback"; /* synonymous with function */
+TipType['function'] = "function";
+TipType.callback = "callback";
+/* synonymous with function */
 TipType.date = "date";
 TipType.document = "document";
 TipType.element = "element";
-TipType.Err = [] ; // Used when indicating that an error should immediately be raised if no parameter is provided
-TipType._blank = []; //useful as a default value
+TipType.Err = [];
+// Used when indicating that an error should immediately be raised if no parameter is provided
+TipType._blank = [];
+//useful as a default value
 /* dnu */
 
 /**
@@ -218,8 +222,8 @@ TipType.getType = function(o) {
  */
 TipType.raiseError = function(a) {
 	alert(a);
-	console.log(a); 
-	debugger;
+	console.log(a);
+	//debugger;
 	return false;
 };
 /**
@@ -254,15 +258,17 @@ TipType.runTest = function() {
  *
  */
 TipType.validateParam = function(type, value, def) {
-	var okay;
-	
+	var okay=false;
+
 	if(type === String) {/* Since instanceof doesn't believe "test" is an instance of string */
 		type = TipType.string;
 	}
 	if(type === Number) {/* nor is 15 an instanceof number */
 		type = TipType.number;
 	}
-
+	if (typeof(type)==='undefined')
+		return (typeof(value)==='undefined');
+		
 	if((value === def)) {
 		okay = true;
 		/* We're always good when the value equals the default */
@@ -274,15 +280,19 @@ TipType.validateParam = function(type, value, def) {
 			/* Empty string means no validator */
 		} else {
 			TipType.raiseError("TipType: Unknown type check, unknown type: " + type);
-			/* @todo Include function information too, function name, line, file, VALUE PROVIDED */
+			return true;
 		}
 	} else if(TipType.getType(type) === "Function") {/* Looks like the type provided was an actual object, e.g. jQuery, Array, user's class */
 		okay = ( value instanceof type);
 	}
+	else {
+		/* unknown type */
+	}
 	return okay;
 }
 
-TipType.testers = {}; /* Gratuitous violation of dry to follow */
+TipType.testers = {};
+/* Gratuitous violation of dry to follow */
 TipType.testers[null] = function() {
 	return true;
 };

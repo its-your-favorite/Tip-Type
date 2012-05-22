@@ -11,13 +11,15 @@
 			 * If you wanted to see if a was a jQuery object instead, you could replace
 			 *  int with jQuery, for example.
 			 */
-			function multiply( /*int*/  a, /* number */  b) {
+			function multiply(  /*int*/  a, /* number, undefined */  b ) {
 				TipType();
 				return a*b;
 			}
  
-			console.log(multiply(2, 5));
-			console.log(multiply([],3)); // Fails. 
+			console.log(multiply(2, 123)); // ok
+			console.log(multiply("16",3)); // ok
+			console.log(multiply(12)); // ok
+			console.log(multiply('a', 15)); // fails 
 			
 			
 			/**
@@ -36,7 +38,7 @@
 			 * Example for OTHER complicated notation. Not recommended.
 			 */
 			function complicatedMultiply2(a, b) {
-				var checks = [{'var': 'a', 'type': TipType.number, 'def': 3}, 
+				var checks = [{'var': 'a', 'type': [TipType.string, TipType.number], 'def': 3}, 
 							  {'var': 'b', 'type': TipType.number, 'def': 13}];
 
 				if( checks = TipType.defaults(checks))
@@ -45,7 +47,7 @@
 				return a * b;
 			}
 					
-			console.log(complicatedMultiply()); // will substite default values
+			console.log(complicatedMultiply(2,3)); // will substite default values
 		 
 		</script>
 	</body>
