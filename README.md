@@ -18,7 +18,9 @@ Example snippet of code plz?
 
 What Browsers does this work in? 
 ----------------------------------------------------------------
-Latest Chrome, Latest FF, IE 8. I haven't tried others 
+Works: Latest Chrome and IE 8. 
+Firefox: Easy notation doesn't work yet. 
+I haven't tried others. 
 
 
 Does this slow my App down? 

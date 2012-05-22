@@ -11,14 +11,14 @@
 			 * If you wanted to see if a was a jQuery object instead, you could replace
 			 *  int with jQuery, for example.
 			 */
-			function multiply(  /*int*/  a, /*  number */  b ) {
+			function multiply(  /*int*/ a, /*  number */  b ) {
 				TipType();
 				return a*b;
 			}
  
 			console.log(multiply(2, 123)); // ok
 			console.log(multiply("16",3)); // ok
-			console.log(multiply(12)); // ok
+			console.log(multiply(12)); // fails
 			console.log(multiply('a', 15)); // fails 
 			
 			

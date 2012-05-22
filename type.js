@@ -33,7 +33,7 @@ TipType = function() {
 	expected = expected.split("{")[0].replace(/\s/g,"").substr(expected.indexOf('('));
 	expected = expected.match(/(\s?(\/\*([^\*]*)\*\/\s?)?([^,\)]+),?)/g);
 
-	var len, variable = null, param_names = [], y;
+	var len, variable = null, param_names = [], y, isClass;
 	for( x = 0, len = expected.length; x < len; x++) 
 		if (expected[x].indexOf("*") >= 0)
 		{
@@ -49,10 +49,12 @@ TipType = function() {
 		
 		okay = false;
 		for( y = 0, len2 = inner.length; (!okay) && (y < len2); y++) {
-			if(window.hasOwnProperty(inner[y]))/* Existing "class" */
+			isClass = (typeof(window.hasOwnProperty) === "undefined") ? (typeof(window[inner[y]]) !== "undefined") : window.hasOwnProperty(inner[y]);
+			if( isClass ) { /* Existing "class" */
 				sought = window[inner[y]];
-			else/* Treat as a string */
+			} else { /* Treat as a string */
 				sought = inner[y];
+				}
 			okay |= TipType.validateParam(sought, passed[x], []);
 		}
 		if(!okay) {
@@ -165,7 +167,7 @@ TipType.defaults = function(info) {
 
 	for(ind in checks) {
 		if(checks.hasOwnProperty(ind))
-			if(expected.indexOf(ind) == -1) {
+			if(TipType.indexOf(expected, ind) == -1) {
 				TipType.raiseError("TipType: Check provided for unknown variable. Function doesn't have a variable '" + ind + "'");
 				failed = true;
 			}
@@ -180,6 +182,7 @@ TipType.defaults = function(info) {
 /**
  * Class Constants
  */
+TipType.undef = "undefined";
 TipType.defined = "defined";
 
 TipType.number = "number";
@@ -197,7 +200,7 @@ TipType.callback = "callback";
 TipType.date = "date";
 TipType.document = "document";
 TipType.element = "element";
-TipType.Err = [];
+TipType.Err = []; 
 // Used when indicating that an error should immediately be raised if no parameter is provided
 TipType._blank = [];
 //useful as a default value
@@ -245,7 +248,7 @@ TipType.runTest = function() {
 		matches = tests[x][1];
 		for( y = 0; y < types.length; y++) {
 			if(TipType.validateParam(TipType[types[y]], tests[x][0], TipType._blank)) {
-				delete matches[matches.indexOf(TipType[types[y]])];
+				delete matches[TipType.indexOf(matches, TipType[types[y]])];
 			}
 		}
 		if(matches.join("").length)
@@ -299,6 +302,10 @@ TipType.testers[TipType.defined] = function(x) {
 	return (typeof(x) !== "undefined");
 }; 
 
+TipType.testers[TipType.undef] = function(value) {
+	return typeof(value) === "undefined";
+};
+
 TipType.testers[TipType.number] = function(value) {
 	return !isNaN(parseFloat(value)) && isFinite(value);
 };
@@ -330,12 +337,12 @@ TipType.testers[TipType.document] = function(value) {
 TipType.testers[TipType.element] = function(value) {
 	return ( value instanceof HTMLElement);
 };
-TipType.testers[TipType.jQuery] = function(value) {
-	if( typeof (jQuery) === "function") {
-		return ( value instanceof jQuery);
-	} else {
-		TipType.raiseError("TipType - Usage - Parameter required to be jQuery when jQuery not included");
-		return false;
-		/* jQuery not included */
-	}
-};
+
+
+
+TipType.indexOf = function(arr,val ){
+	for (var i = 0, j = arr.length; i < j; i++) {
+         if (arr[i] === val) { return i; }
+     }
+     return -1;
+}
