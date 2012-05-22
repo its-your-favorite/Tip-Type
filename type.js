@@ -180,9 +180,8 @@ TipType.defaults = function(info) {
 /**
  * Class Constants
  */
-TipType.anything = "anything";
-TipType.anything2 = "?";
-/* same as anything */
+TipType.defined = "defined";
+
 TipType.number = "number";
 TipType.integer = "integer";
 TipType.int = "int";
@@ -296,10 +295,9 @@ TipType.testers = {};
 TipType.testers[null] = function() {
 	return true;
 };
-TipType.testers[TipType.anything] = function() {
-	return true;
-};
-TipType.testers[TipType.anything2] = TipType.testers[TipType.anything];
+TipType.testers[TipType.defined] = function(x) {
+	return (typeof(x) !== "undefined");
+}; 
 
 TipType.testers[TipType.number] = function(value) {
 	return !isNaN(parseFloat(value)) && isFinite(value);
