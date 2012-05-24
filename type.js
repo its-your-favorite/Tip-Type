@@ -14,9 +14,7 @@ if you want to allow any of these use simply Object with a capital O, otherwise 
 
 /**
  *
- * @todo: refactoring described below.
- * @todo: Enhance expected error message. If expected was an array of possibilities, display it well.
- * @todo: refactor code to unify class constants and tests array
+ * @todo: Further improve by adding support for anonymous functions in Firefox
  */
 
 /**
@@ -28,8 +26,13 @@ TipType = function() {
 	var expected = TipType.caller.toString(), comment = null, okay = null, sought = null;
 	var passed = Array.prototype.slice.call(TipType.caller.arguments), inner;
 	var prefix = "/^function .*\\(/";
+	var func_name = expected.match(/function\s?([^\(\s]*)\s?\(/i)[1];
+
+	if (navigator.userAgent.indexOf('Firefox') !== -1) {/* Firefox strips comments from source code */
+		expected = (TipType.findActualFunctionSrcWithComments(func_name));
+	} else {}
+		/* The list of actual function parameters in the declaration */
 	
-	/* The list of actual function parameters in the declaration */
 	expected = expected.split("{")[0].replace(/\s/g,"").substr(expected.indexOf('('));
 	expected = expected.match(/(\s?(\/\*([^\*]*)\*\/\s?)?([^,\)]+),?)/g);
 
@@ -179,6 +182,9 @@ TipType.defaults = function(info) {
 	}
 	return false;
 };
+
+TipType.cachedFileContents = {};
+TipType.cachedFunctionDeclarations = {};
 /**
  * Class Constants
  */
@@ -211,10 +217,13 @@ TipType._blank = [];
  * Excerpted from James Padolsey http://james.padolsey.com/javascript/checking-types-in-javascript/
  */
 TipType.getType = function(o) {
-	if(o === "") {
+	if(o === "") 
 		return "String";
-		/* Modification by Alex, otherwise empty strings are typed as false */
-	}
+	if (typeof(o) === "undefined")
+		return "Undefined";
+	if (o === null)
+		return "Null"; /* Modifications by Alex, to type falsey values */
+		
 	return !!o && Object.prototype.toString.call(o).match(/(\w+)\]/)[1];
 }
 /**
@@ -345,4 +354,41 @@ TipType.indexOf = function(arr,val ){
          if (arr[i] === val) { return i; }
      }
      return -1;
+}
+
+/**
+ * Name must not be a regex
+ */
+TipType.findActualFunctionSrcWithComments = function(name) {
+	var file; 
+	var fileContents = null; 
+	/* if file == main file, don't do this, just use document.innerhtml */
+	try { throw new Error("getting filename"); file = file[0][0][0]; } catch (e) { 
+			file = e.stack.split('\n').splice(-2)[0].substr(1);
+			file = file.substr(0, file.lastIndexOf(':')); /* Ignore line number */
+		 };
+	
+	if (typeof(jQuery) === "undefined")
+		return TipType.raiseError("TipType: Fatal Error: Firefox requires jQuery for easy notation");
+		
+	if (!TipType.cachedFileContents[file])
+		jQuery.ajax(file, {async: false})
+			.always(function(a,b,c) { 
+				TipType.cachedFileContents[file] = c.responseText ; 
+				TipType.cachedFunctionDeclarations[file] = {};
+				 });
+	
+	if (TipType.cachedFunctionDeclarations[file].hasOwnProperty(name))
+		return TipType.cachedFunctionDeclarations[file][name];
+		
+	var matches = TipType.cachedFileContents[file].match(new RegExp("function\\s?" + name + "\\([^{]*{", "gi")); /* Eventually we'll want to go in deeper for anonymous functions */
+	
+	if (matches.length > 1) {
+		TipType.raiseError("Tip-Type cannot handle duplicate function declarations in firefox. Function: " + name);
+	} else if (matches.length === 1) {
+		TipType.cachedFunctionDeclarations[file][name] = matches[0];
+		return TipType.cachedFunctionDeclarations[file][name] ;
+	} else {
+		return false;
+	}
 }

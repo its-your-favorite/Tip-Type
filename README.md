@@ -18,9 +18,12 @@ Example snippet of code plz?
 
 What Browsers does this work in? 
 ----------------------------------------------------------------
-Works: Latest Chrome and IE 8. 
-Firefox: Easy notation doesn't work yet. 
-I haven't tried others. 
+Chrome: Fuly Supported
+IE 8: Fully Supported 
+Firefox: Workaround requiring jQuery for easy notation. Easy Notation doesn't work on anonymous functions or cross domains. 
+Node: Untested
+Opera: Untested
+Safari: Untested
 
 
 Does this slow my App down? 
