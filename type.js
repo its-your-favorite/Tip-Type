@@ -22,13 +22,13 @@ if you want to allow any of these use simply Object with a capital O, otherwise 
  * 
  * Assumptions: You don't use { in your comments
  */
-TipType = function() {
+TipType = function(/*DO NOT ALTER THIS COMMENT\*/) {
 	var expected = TipType.caller.toString(), comment = null, okay = null, sought = null;
 	var passed = Array.prototype.slice.call(TipType.caller.arguments), inner;
 	var prefix = "/^function .*\\(/";
 	var func_name = expected.match(/function\s?([^\(\s]*)\s?\(/i)[1];
 
-	if (navigator.userAgent.indexOf('Firefox') !== -1) {/* Firefox strips comments from source code */
+	if (TipType.toString().indexOf('/*DO NOT ALTER THIS COMMENT\\*/') === -1) {/* Firefox, safari strips comments from source code */
 		expected = (TipType.findActualFunctionSrcWithComments(func_name));
 	} else {}
 		/* The list of actual function parameters in the declaration */
@@ -226,6 +226,7 @@ TipType.getType = function(o) {
 		
 	return !!o && Object.prototype.toString.call(o).match(/(\w+)\]/)[1];
 }
+
 /**
  * raiseError
  *
@@ -364,12 +365,16 @@ TipType.findActualFunctionSrcWithComments = function(name) {
 	var fileContents = null; 
 	/* if file == main file, don't do this, just use document.innerhtml */
 	try { throw new Error("getting filename"); file = file[0][0][0]; } catch (e) { 
+			if (!e.hasOwnProperty('stack')) {
+				TipType.raiseError("Your browser doesn't support easy notation");
+				return false;
+			}
 			file = e.stack.split('\n').splice(-2)[0].substr(1);
 			file = file.substr(0, file.lastIndexOf(':')); /* Ignore line number */
 		 };
 	
 	if (typeof(jQuery) === "undefined")
-		return TipType.raiseError("TipType: Fatal Error: Firefox requires jQuery for easy notation");
+		return TipType.raiseError("TipType: Fatal Error: Your browser requires jQuery for easy notation");
 		
 	if (!TipType.cachedFileContents[file])
 		jQuery.ajax(file, {async: false})

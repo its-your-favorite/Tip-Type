@@ -21,9 +21,9 @@ What Browsers does this work in?
 Chrome: Fuly Supported
 IE 8: Fully Supported 
 Firefox: Workaround requiring jQuery for easy notation. Easy Notation doesn't work on anonymous functions or cross domains. 
-Node: Untested
+Node: Should work
 Opera: Untested
-Safari: Untested
+Safari: Easy notation NOT supported. 
 
 
 Does this slow my App down? 
