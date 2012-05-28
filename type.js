@@ -22,6 +22,11 @@ if you want to allow any of these use simply Object with a capital O, otherwise 
  * 
  * Assumptions: You don't use { in your comments
  */
+var x = function multiply(/*int*/ x ) {
+	TipType();
+	return 2*x;
+}
+
 TipType = function(/*DO NOT ALTER THIS COMMENT\*/) {
 	var expected = TipType.caller.toString(), comment = null, okay = null, sought = null;
 	var passed = Array.prototype.slice.call(TipType.caller.arguments), inner;
@@ -41,20 +46,32 @@ TipType = function(/*DO NOT ALTER THIS COMMENT\*/) {
 		if (expected[x].indexOf("*") >= 0)
 		{
 		inner = expected[x].split("*/");
+		if(inner.length === 2)
+			inner = inner[0].split("/*");
+		else
+			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
+		
 		if(inner.length !== 2)
 			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
-		variable = inner[1].split(",")[0];
-		inner = inner[0].split("/*");
-		if(inner.length !== 2)
-			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
-			
+		
 		inner = inner[1].split(","); /* In case multiple valid types */
+		//console.log(inner.join(','));
 		
 		okay = false;
 		for( y = 0, len2 = inner.length; (!okay) && (y < len2); y++) {
-			isClass = (typeof(window.hasOwnProperty) === "undefined") ? (typeof(window[inner[y]]) !== "undefined") : window.hasOwnProperty(inner[y]);
+			if (typeof(window) === 'undefined') { /* Node.js */
+				isClass = (eval('typeof(' + inner[y] + ')') !== "undefined");
+			} else {
+				isClass = (typeof(window.hasOwnProperty) === "undefined") ? (typeof(window[inner[y]]) !== "undefined") : window.hasOwnProperty(inner[y]);
+			}
+			
 			if( isClass ) { /* Existing "class" */
-				sought = window[inner[y]];
+				//console.log("P2");
+				if (typeof(window) === 'undefined') { 
+					sought = eval(inner[y]);
+				} else {
+					sought = window[inner[y]];
+				}
 			} else { /* Treat as a string */
 				sought = inner[y];
 				}
@@ -233,7 +250,7 @@ TipType.getType = function(o) {
  * You *should* connect this function to your desired error-handler method. It should return falsey.
  */
 TipType.raiseError = function(a) {
-	alert(a);
+	//alert(a);
 	console.log(a);
 	//debugger;
 	return false;

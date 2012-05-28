@@ -16,12 +16,12 @@ Example snippet of code plz?
     console.log(multiply(10, 'oops')); // generates an error
 
 
-What Browsers does this work in? 
+Compatibility? 
 ----------------------------------------------------------------
 Chrome: Fuly Supported
 IE 8: Fully Supported 
+Node: Fully Supported
 Firefox: Workaround requiring jQuery for easy notation. Easy Notation doesn't work on anonymous functions or cross domains. 
-Node: Should work
 Opera: Untested
 Safari: Easy notation NOT supported. 
 
