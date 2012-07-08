@@ -10,6 +10,8 @@
 
 Though the following actually are all instanceof object in javascript(date, html element, array [], function ), this library does not trigger true for TipType.object
 if you want to allow any of these use simply Object with a capital O, otherwise use TipType.object , or TipType.map if you explicitly want an assoc array
+
+To do: Change this, Boolean, Number, String, and Object should use my library by default, make an alternate notation for the pure object. People want to use the actual object probs < 5%
 */
 
 /**
@@ -17,24 +19,24 @@ if you want to allow any of these use simply Object with a capital O, otherwise 
  * @todo: Further improve by adding support for anonymous functions in Firefox
  */
 
-/**
- * Used for the quick notation, which doesn't support default values
- * 
- * Assumptions: You don't use { in your comments
- */
-var x = function multiply(/*int*/ x ) {
-	TipType();
-	return 2*x;
-}
-
 TipType = function(/*DO NOT ALTER THIS COMMENT\*/) {
 	var expected = TipType.caller.toString(), comment = null, okay = null, sought = null;
 	var passed = Array.prototype.slice.call(TipType.caller.arguments), inner;
 	var prefix = "/^function .*\\(/";
 	var func_name = expected.match(/function\s?([^\(\s]*)\s?\(/i)[1];
-
+	TipType.caller.displayName = "A ziggy;";
+	
 	if (TipType.toString().indexOf('/*DO NOT ALTER THIS COMMENT\\*/') === -1) {/* Firefox, safari strips comments from source code */
+		console.log("TipType is not compatible with your browser ");
+		TipType=function(){};
+		return;
+		/* unfortunately, due to extreme complexities under certain situations in firefox callback
+		 * this doesn't work with non-chrome / non-ie browsers yet.
+		 */
+		
 		expected = (TipType.findActualFunctionSrcWithComments(func_name));
+		if (!expected)
+			return false;
 	} else {}
 		/* The list of actual function parameters in the declaration */
 	
@@ -46,10 +48,11 @@ TipType = function(/*DO NOT ALTER THIS COMMENT\*/) {
 		if (expected[x].indexOf("*") >= 0)
 		{
 		inner = expected[x].split("*/");
-		if(inner.length === 2)
+		if(inner.length === 2) {
 			inner = inner[0].split("/*");
-		else
+		} else {
 			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
+		}
 		
 		if(inner.length !== 2)
 			return TipType.raiseError("TipType: CheckParam ITSELF wasn't provided a valid assertion."); 
@@ -78,7 +81,9 @@ TipType = function(/*DO NOT ALTER THIS COMMENT\*/) {
 			okay |= TipType.validateParam(sought, passed[x], []);
 		}
 		if(!okay) {
-			TipType.raiseError("TipType. Type Checking Assertion Failed on " + inner.join(",") + ". Received: " + TipType.getType(passed[x]) + ", expected: " + inner.join(","));
+			//alert("Zorg" + (passed[x] instanceof EasyGraph));
+			//alert(passed[x].__proto__.constructor)
+			TipType.raiseError("TipType. Type Checking Assertion Failed on " + inner.join(",") + ". Received: " + TipType.getType(passed[x])  + ", expected: " + inner.join(",") );
 		}
 
 	}
@@ -208,6 +213,7 @@ TipType.cachedFunctionDeclarations = {};
 TipType.undef = "undefined";
 TipType.defined = "defined";
 
+TipType.bool = "boolean";
 TipType.number = "number";
 TipType.integer = "integer";
 TipType.int = "int";
@@ -312,7 +318,7 @@ TipType.validateParam = function(type, value, def) {
 			return true;
 		}
 	} else if(TipType.getType(type) === "Function") {/* Looks like the type provided was an actual object, e.g. jQuery, Array, user's class */
-		okay = ( value instanceof type);
+		okay = ( value instanceof type) || (value.constructor && (value.constructor.toString() == type)); /* 2nd half = weird Firefox bug */
 	}
 	else {
 		/* unknown type */
@@ -322,8 +328,8 @@ TipType.validateParam = function(type, value, def) {
 
 TipType.testers = {};
 /* Gratuitous violation of dry to follow */
-TipType.testers[null] = function() {
-	return true;
+TipType.testers[null] = function(x) {
+	return (x===null);
 };
 TipType.testers[TipType.defined] = function(x) {
 	return (typeof(x) !== "undefined");
@@ -331,6 +337,10 @@ TipType.testers[TipType.defined] = function(x) {
 
 TipType.testers[TipType.undef] = function(value) {
 	return typeof(value) === "undefined";
+};
+
+TipType.testers[TipType.bool] = function( value ) {
+	return (value === true) || (value === false);	
 };
 
 TipType.testers[TipType.number] = function(value) {
@@ -378,39 +388,64 @@ TipType.indexOf = function(arr,val ){
  * Name must not be a regex
  */
 TipType.findActualFunctionSrcWithComments = function(name) {
-	var file; 
+	var file, lineNumber, name; 
 	var fileContents = null; 
 	/* if file == main file, don't do this, just use document.innerhtml */
-	try { throw new Error("getting filename"); file = file[0][0][0]; } catch (e) { 
+	try { throw new Error("getting filename"); file = file[0][0][0]; } catch (e) {
 			if (!e.hasOwnProperty('stack')) {
 				TipType.raiseError("Your browser doesn't support easy notation");
 				return false;
 			}
-			file = e.stack.split('\n').splice(-2)[0].substr(1);
-			file = file.substr(0, file.lastIndexOf(':')); /* Ignore line number */
+			var last, ind=1;
+			do {
+				ind++;
+				file = e.stack.split('\n')[ind].substr(1);
+				last = file.lastIndexOf(':');
+				lineNumber = file.substr(last+1);
+				file = file.substr(0, last); /* Ignore line number */
+				file = file.split("@").splice(-1)[0];
+			} while ((file.toLowerCase().indexOf('jquery')>=0) || (file.indexOf('tiptype.js') >= 0));
 		 };
 	
 	if (typeof(jQuery) === "undefined")
 		return TipType.raiseError("TipType: Fatal Error: Your browser requires jQuery for easy notation");
 		
-	if (!TipType.cachedFileContents[file])
+	var done = false;
+	if (!TipType.cachedFileContents[file] && !TipType.cachedFileContents[lineNumber]){
 		jQuery.ajax(file, {async: false})
 			.always(function(a,b,c) { 
-				TipType.cachedFileContents[file] = c.responseText ; 
+				done = true;
+				if (!c.hasOwnProperty('responseText'))
+					TipType.cachedFileContents[file] = ''; /* forbidden, etc*/
+				else
+					TipType.cachedFileContents[file] = c.responseText ; 
+				 
 				TipType.cachedFunctionDeclarations[file] = {};
 				 });
+			while (!done) {
+				;
+			}
+	}
 	
 	if (TipType.cachedFunctionDeclarations[file].hasOwnProperty(name))
 		return TipType.cachedFunctionDeclarations[file][name];
+	if (TipType.cachedFunctionDeclarations[file].hasOwnProperty(lineNumber))
+		return TipType.cachedFunctionDeclarations[file][lineNumber];
 		
-	var matches = TipType.cachedFileContents[file].match(new RegExp("function\\s?" + name + "\\([^{]*{", "gi")); /* Eventually we'll want to go in deeper for anonymous functions */
+	var contents = TipType.cachedFileContents[file];
+	var matches = contents.match(new RegExp("function\\s?" + name + "\\([^{]*{", "gi")); /* Eventually we'll want to go in deeper for anonymous functions */
 	
-	if (matches.length > 1) {
-		TipType.raiseError("Tip-Type cannot handle duplicate function declarations in firefox. Function: " + name);
-	} else if (matches.length === 1) {
-		TipType.cachedFunctionDeclarations[file][name] = matches[0];
-		return TipType.cachedFunctionDeclarations[file][name] ;
-	} else {
-		return false;
+	if (matches.length !== 1) {
+				/* Anonymous function? Try getting its src by line number */
+		name = lineNumber;
+
+		contents = contents.split("\n").splice(lineNumber-3,20).join("\n");/*Assume function declaration no more than 20 lines */
+		var matches = contents.match(new RegExp("function\\s?" + "\\([^{]*{", "gi")); /* Regex for anonymous*/
 	}
+	if (!matches || !matches.length)
+		return TipType.raiseError("TipType: Fatal Error: Having difficulty finding your function, maybe name it: File " + file + " line " + lineNumber );
+	
+	TipType.cachedFunctionDeclarations[file][name] = matches[0];
+	return TipType.cachedFunctionDeclarations[file][name] ;
+
 }

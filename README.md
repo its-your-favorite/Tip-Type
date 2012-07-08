@@ -1,7 +1,7 @@
 #Tip-Type
 Copyright Alex Rohde 2012. Released under GPL v2
 * * *
-At long last! Type Checking in javascript! Tip-Type is a javascript library for allowing both type checking, and default parameters in javascript.
+At long last! Type Checking in javascript! Tip-Type is a javascript library for allowing both type checking, and default parameters in javascript. Not compatible with firefox.
 
 
 Example snippet of code plz?
@@ -13,7 +13,7 @@ Example snippet of code plz?
     }
 
     console.log(multiply(3, 5 )); // logs 15
-    console.log(multiply(10, 'oops')); // generates an error
+    console.log(multiply(10, 'oops')); // generates an error, instead of the NaN you'd normally get
 
 
 Compatibility? 
@@ -21,16 +21,16 @@ Compatibility?
 Chrome: Fuly Supported
 IE 8: Fully Supported 
 Node: Fully Supported
-Firefox: Workaround requiring jQuery for easy notation. Easy Notation doesn't work on anonymous functions or cross domains. 
+Firefox: NOT FUNCTIONAL. 
 Opera: Untested
 Safari: Easy notation NOT supported. 
 
 
 Does this slow my App down? 
 ----------------------------------------------------------------
-Maybe a little. If you're having speed concerns, then you can
-disable type checking in production by removing the file or setting
-TipType = function() {}; of course.
+It will be insignificant, and since you should disable this in production, it won't 
+slow you down there at all. To disable in production, simply include a line like
+TipType = function(){};
 
 
 So. What other cool stuff?
@@ -45,9 +45,10 @@ What problem does this library solve?
 The inability to type check in JS. 
 
 
-What if I want to minify in production AND keep type checking in production?
+What if I want to minify?
 ----------------------------------------------------------------
-Then you'd have to use advanced notation. 
+You're fine, because you won't minify until production and should disable
+this at production.
 
 
 What valid types can I check? 
