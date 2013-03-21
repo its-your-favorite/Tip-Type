@@ -1,4 +1,6 @@
-#Tip-Type
+#UPDATE: Unfortunately strict mode makes this unfeasible, so this is no longer actively maintained. Try type-script or something.
+
+#Tip-Type 
 Copyright Alex Rohde 2012. Released under GPL v2
 * * *
 At long last! Type Checking in javascript! Tip-Type is a javascript library for allowing both type checking, and default parameters in javascript. Not compatible with firefox.
